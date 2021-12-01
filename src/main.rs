@@ -1,15 +1,16 @@
 use chrono::{Date, Datelike, Local, TimeZone};
 use curl::easy::Easy;
-use std::env;
 use std::fs;
 use std::fs::File;
 use std::io::{ErrorKind, Write};
+use std::path::PathBuf;
+
+mod day1;
 
 const TOKEN: &str = "***REMOVED***";
 
 fn make_day(date: Date<Local>) -> std::io::Result<()> {
-    let mut day_dir = env::current_dir()?;
-    day_dir.push("src");
+    let mut day_dir = PathBuf::from("./src/");
     day_dir.push(format!("day{}", date.day()));
 
     let url = format!(
@@ -42,12 +43,18 @@ fn make_day(date: Date<Local>) -> std::io::Result<()> {
     })
     .unwrap();
     easy.get(true).unwrap();
-    easy.perform().unwrap();
+    easy.perform().expect(&format!(
+        "Encountered error when performing request to {:?}",
+        &url
+    ));
     assert_eq!(easy.response_code().unwrap(), 200);
 
     let mut rs_path = day_dir.clone();
-    rs_path.push("main.rs");
-    let _ = File::create(&rs_path)?;
+    rs_path.push("mod.rs");
+
+    if !rs_path.exists() {
+        let _ = File::create(&rs_path)?;
+    }
 
     Ok(())
 }
@@ -65,5 +72,9 @@ fn make_until_today() -> std::io::Result<()> {
 }
 
 fn main() -> std::io::Result<()> {
-    make_until_today()
+    make_until_today()?;
+    println!("{}", day1::day1::main1()?);
+    println!("{}", day1::day1::main2()?);
+
+    Ok(())
 }
