@@ -73,8 +73,8 @@ fn make_until_today() -> std::io::Result<()> {
 
 fn main() -> std::io::Result<()> {
     make_until_today()?;
-    println!("{}", day1::day1::main1()?);
-    println!("{}", day1::day1::main2()?);
+    println!("{}", day1::main1()?);
+    println!("{}", day1::main2()?);
 
     Ok(())
 }
