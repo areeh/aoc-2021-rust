@@ -6,6 +6,7 @@ use std::io::{ErrorKind, Write};
 use std::path::PathBuf;
 
 mod day1;
+mod day2;
 
 const TOKEN: &str = "***REMOVED***";
 
@@ -74,6 +75,7 @@ fn make_until_today() -> std::io::Result<()> {
 fn main() -> std::io::Result<()> {
     make_until_today()?;
     day1::main()?;
+    day2::main()?;
 
     Ok(())
 }
