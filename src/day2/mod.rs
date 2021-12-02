@@ -187,6 +187,7 @@ impl Add<Direction> for Pos2 {
     }
 }
 
+#[allow(dead_code)]
 fn part1_jeff(input: &str) -> i32 {
     let pos = input
         .lines()
@@ -195,6 +196,7 @@ fn part1_jeff(input: &str) -> i32 {
     pos.d * pos.f
 }
 
+#[allow(dead_code)]
 fn part2_jeff(input: &str) -> i32 {
     let pos = input
         .lines()
