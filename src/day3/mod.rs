@@ -16,20 +16,20 @@ fn parse(input: &str) -> Vec<u16> {
         .unwrap()
 }
 
-fn nth(v: &u16, bits: u32, n: u32) -> u16 {
+fn nth(v: &u16, bits: usize, n: usize) -> u16 {
     (v & (1 << bits - 1) >> n) >> (bits - 1 - n)
 }
 
-fn sum_nth_bit(bits_slice: &[u16], n: u32, bits: u32) -> u32 {
+fn sum_nth_bit(bits_slice: &[u16], n: usize, bits: usize) -> usize {
     bits_slice
         .iter()
-        .fold(0, |acc, v| acc + nth(v, bits, n) as u32)
+        .fold(0, |acc, v| acc + nth(v, bits, n) as usize)
 }
 
 fn part1(input: &str) -> u32 {
-    let bits = input.lines().next().unwrap().len() as u32;
+    let bits = input.lines().next().unwrap().len();
     let v = parse(input);
-    let half_n_elements = (v.len() / 2) as u32;
+    let half_n_elements = v.len() / 2;
     let most_mask: Vec<_> = (0..bits)
         .map(|i| sum_nth_bit(&v, i, bits) > half_n_elements)
         .collect();
@@ -37,13 +37,13 @@ fn part1(input: &str) -> u32 {
     to_u32(&most_mask) * to_u32(&least_mask)
 }
 
-fn some_retain(bit_vec: &[u16], bits: u32, flip: bool) -> u32 {
+fn some_retain(bit_vec: &[u16], bits: usize, flip: bool) -> u32 {
     let mut tmp_bit_vec = bit_vec.to_vec();
     for i in 0..bits {
-        let half_n_elements = tmp_bit_vec.len() as f32 / 2 as f32;
+        let half_n_elements = tmp_bit_vec.len() as f32 / 2.0;
         let sum_of_nth = sum_nth_bit(&tmp_bit_vec, i, bits);
-        let cmp_val = ((sum_of_nth as f32 >= half_n_elements) ^ flip) as u16;
-        tmp_bit_vec.retain(|&v| nth(&v, bits, i) == cmp_val);
+        let cmp_val = (sum_of_nth as f32 >= half_n_elements) ^ flip;
+        tmp_bit_vec.retain(|&v| nth(&v, bits, i) == cmp_val as u16);
         if tmp_bit_vec.len() == 1 {
             break;
         }
@@ -52,13 +52,13 @@ fn some_retain(bit_vec: &[u16], bits: u32, flip: bool) -> u32 {
 }
 
 fn part2(input: &str) -> u32 {
-    let bits = input.lines().next().unwrap().len() as u32;
+    let bits = input.lines().next().unwrap().len();
     let bit_vec = parse(input);
 
     let oxy = some_retain(&bit_vec, bits, false);
     let co2 = some_retain(&bit_vec, bits, true);
 
-    (oxy * co2) as u32
+    oxy * co2
 }
 
 pub fn main() -> std::io::Result<()> {
