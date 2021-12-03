@@ -1,4 +1,4 @@
-use ndarray::{Array2, ArrayView1, ArrayView2, Axis, s};
+use ndarray::{s, Array2, ArrayView1, ArrayView2, Axis};
 use std::{
     fs,
     io::{BufRead, BufReader},
@@ -72,7 +72,6 @@ fn part2(arr: ArrayView2<u16>) -> u32 {
     for i in 0..arr.dim().0 {
         let mut cnt = 0;
 
-
         for j in &valid_indices_most {
             if arr[[*j, i]] == 1 {
                 cnt += 1;
@@ -90,7 +89,6 @@ fn part2(arr: ArrayView2<u16>) -> u32 {
     }
     for i in 0..arr.dim().0 {
         let mut cnt = 0;
-
 
         for j in &valid_indices_least {
             if arr[[*j, i]] == 1 {
@@ -117,7 +115,6 @@ fn part2(arr: ArrayView2<u16>) -> u32 {
     let co2 = to_u32_bin_u16(co2_arr.view());
 
     oxygen * co2
-
 }
 
 pub fn main() -> std::io::Result<()> {
@@ -147,6 +144,12 @@ fn example() {
 
 #[test]
 fn task() {
-    assert_eq!(part1(read_array("./src/day3/input.txt").unwrap().view()), 1458194);
-    assert_eq!(part2(read_array("./src/day3/input.txt").unwrap().view()), 2829354);
+    assert_eq!(
+        part1(read_array("./src/day3/input.txt").unwrap().view()),
+        1458194
+    );
+    assert_eq!(
+        part2(read_array("./src/day3/input.txt").unwrap().view()),
+        2829354
+    );
 }
