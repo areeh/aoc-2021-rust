@@ -1,3 +1,5 @@
+#![feature(test)]
+
 use chrono::{Date, Datelike, Local, TimeZone};
 use curl::easy::Easy;
 use std::fs;
@@ -8,6 +10,7 @@ use std::path::PathBuf;
 mod day1;
 mod day2;
 mod day3;
+mod day4;
 
 const TOKEN: &str = "***REMOVED***";
 
@@ -78,6 +81,7 @@ fn main() -> std::io::Result<()> {
     day1::main()?;
     day2::main()?;
     day3::main()?;
+    day4::main()?;
 
     Ok(())
 }
