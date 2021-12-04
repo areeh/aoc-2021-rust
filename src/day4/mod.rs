@@ -1,25 +1,24 @@
 extern crate test;
-use itertools::enumerate;
 use itertools::Itertools;
 use ndarray::{Array2, Axis};
 use std::collections::HashMap;
 use std::fs;
 use test::Bencher;
 
+type Board = Array2<u32>;
+
 fn input1() -> std::io::Result<String> {
     fs::read_to_string("./src/day4/input.txt")
 }
 
-fn read_input(input: &str) -> std::io::Result<(Vec<Array2<u32>>, Vec<u32>)> {
-    let mut lines_iter = input.lines();
-    let numbers = lines_iter
-        .next()
-        .unwrap()
+fn read_input(input: &str) -> (Vec<u32>, Vec<Array2<u32>>) {
+    let (numbers, boards_str) = input.split_once("\n\n").unwrap();
+    let numbers = numbers
         .split(",")
         .map(|v| v.parse())
         .collect::<Result<_, _>>()
         .unwrap();
-    lines_iter.next();
+
     let board_size = input
         .lines()
         .skip(2)
@@ -30,7 +29,7 @@ fn read_input(input: &str) -> std::io::Result<(Vec<Array2<u32>>, Vec<u32>)> {
 
     let mut boards: Vec<Array2<u32>> = Vec::new();
     let mut data = Vec::new();
-    for line in lines_iter {
+    for line in boards_str.lines() {
         if line.trim() == "" {
             let data_len = data.len();
             let n_rows = data_len / board_size;
@@ -48,82 +47,117 @@ fn read_input(input: &str) -> std::io::Result<(Vec<Array2<u32>>, Vec<u32>)> {
     let data_len = data.len();
     let n_rows = data_len / board_size;
     boards.push(Array2::from_shape_vec((n_rows, board_size), data.to_vec()).unwrap());
-    data.clear();
 
-    Ok((boards, numbers))
+    (numbers, boards)
 }
 
-fn part1(input: &str, last: bool) -> std::io::Result<u32> {
-    let (boards, numbers) = read_input(input)?;
-    let num_boards = boards.len();
-    let mut marked_boards: Vec<Array2<u32>> = (0..boards.len())
-        .map(|i| Array2::ones(boards[i].dim()))
-        .collect_vec();
-    let mut reverse_index: HashMap<&u32, Vec<(usize, (usize, usize))>> = HashMap::new();
+fn build_reverse_index(boards: &Vec<Board>) -> Vec<HashMap<u32, Vec<(usize, usize)>>> {
+    let mut reverse_index = Vec::new();
 
-    for (i, b) in enumerate(&boards) {
+    for b in boards {
+        reverse_index.push(HashMap::new());
         for ((x, y), elem) in b.indexed_iter() {
             reverse_index
-                .entry(elem)
+                .last_mut()
+                .unwrap()
+                .entry(elem.clone())
                 .or_insert(Vec::new())
-                .push((i, (x, y)));
+                .push((x, y));
         }
     }
+    reverse_index
+}
 
-    let mut rem_indices: Vec<_> = (0..num_boards).collect();
-    let mut winner = 0;
-    let mut winner_num: u32 = 0;
-    let mut last_winner = false;
+fn calc_score(
+    winner_num: u32,
+    winner_idx: usize,
+    boards: &Vec<Board>,
+    marked_boards: Vec<Board>,
+) -> u32 {
+    (&boards[winner_idx] * &marked_boards[winner_idx]).sum() * winner_num
+}
+
+fn mark(
+    i: usize,
+    num: &u32,
+    marked_boards: &mut Vec<Board>,
+    reverse_index: &Vec<HashMap<u32, Vec<(usize, usize)>>>,
+) {
+    if let Some(idx_vec) = reverse_index[i].get(num) {
+        for (x, y) in idx_vec {
+            let board = marked_boards.get_mut(i).unwrap();
+            board[[*x, *y]] = 0;
+        }
+    }
+}
+
+fn is_win(marked_board: &Board) -> bool {
+    let wins_x = marked_board
+        .sum_axis(Axis(0))
+        .iter()
+        .map(|v| *v == 0 as u32)
+        .any(|x| x);
+    let wins_y = marked_board
+        .sum_axis(Axis(1))
+        .iter()
+        .map(|v| *v == 0 as u32)
+        .any(|x| x);
+    wins_x | wins_y
+}
+
+fn part1(numbers: &Vec<u32>, boards: &Vec<Board>) -> u32 {
+    let num_boards = boards.len();
+    let mut marked_boards: Vec<Board> = (0..boards.len())
+        .map(|i| Array2::ones(boards[i].dim()))
+        .collect_vec();
+    let reverse_index = build_reverse_index(&boards);
+
     for num in numbers {
-        if let Some(idx_vec) = reverse_index.get(&num) {
-            for (i, (x, y)) in idx_vec {
-                let current_board = marked_boards.get_mut(i.to_owned()).unwrap();
-                current_board[[x.to_owned(), y.to_owned()]] = 0;
-            }
-
-            fn predicate(j: usize, marked_boards: &Vec<Array2<u32>>) -> bool {
-                let wins_x = marked_boards[j]
-                    .sum_axis(Axis(0))
-                    .iter()
-                    .map(|v| *v == 0 as u32)
-                    .any(|x| x);
-                let wins_y = marked_boards[j]
-                    .sum_axis(Axis(1))
-                    .iter()
-                    .map(|v| *v == 0 as u32)
-                    .any(|x| x);
-                wins_x | wins_y
-            }
-
-            if last & !last_winner {
-                rem_indices.retain(|j| !predicate(*j, &marked_boards));
-                if rem_indices.len() == 1 {
-                    winner = rem_indices[0];
-                    last_winner = true;
-                }
-            } else {
-                if let Some(win_idx) = rem_indices
-                    .iter()
-                    .filter(|j| predicate(**j, &marked_boards))
-                    .next()
-                {
-                    if winner == 0 {
-                        winner = win_idx.to_owned();
-                    }
-                    winner_num = num;
-                    break;
-                }
+        for i in 0..num_boards {
+            mark(i, &num, &mut marked_boards, &reverse_index);
+            if is_win(&marked_boards[i]) {
+                return calc_score(*num, i, boards, marked_boards);
             }
         }
     }
+    unreachable!()
+}
 
-    return Ok((&boards[winner] * &marked_boards[winner]).sum() * winner_num);
+fn part2(numbers: &Vec<u32>, boards: &Vec<Board>) -> u32 {
+    let num_boards = boards.len();
+    let mut marked_boards: Vec<Board> = (0..boards.len())
+        .map(|i| Array2::ones(boards[i].dim()))
+        .collect_vec();
+
+    let mut rem_indices: Vec<usize> = (0..num_boards).collect();
+    let reverse_index = build_reverse_index(&boards);
+
+    let mut winner_idx = 0;
+
+    for num in numbers {
+        if let [last_idx] = *rem_indices {
+            winner_idx = last_idx;
+        }
+        for i in &rem_indices {
+            mark(*i, &num, &mut marked_boards, &reverse_index);
+        }
+
+        rem_indices = rem_indices
+            .into_iter()
+            .filter(|i| !is_win(&marked_boards[*i]))
+            .collect();
+
+        if rem_indices.len() == 0 {
+            return calc_score(*num, winner_idx, boards, marked_boards);
+        }
+    }
+    unreachable!()
 }
 
 pub fn main() -> std::io::Result<()> {
-    let input = input1()?;
-    println!("{:?}", part1(&input, false)?);
-    println!("{:?}", part1(&input, true)?);
+    let (numbers, boards) = read_input(&input1()?);
+    println!("{:?}", part1(&numbers, &boards));
+    println!("{:?}", part2(&numbers, &boards));
     Ok(())
 }
 
@@ -148,22 +182,23 @@ fn example() {
     18  8 23 26 20
     22 11 13  6  5
      2  0 12  3  7";
-    assert_eq!(part1(input, false).unwrap(), 4512);
-    assert_eq!(part1(input, true).unwrap(), 1924);
+    let (numbers, boards) = read_input(input);
+    assert_eq!(part1(&numbers, &boards), 4512);
+    assert_eq!(part2(&numbers, &boards), 1924);
 }
 
 #[test]
 fn task() {
-    let input = input1().unwrap();
-    assert_eq!(part1(&input, false).unwrap(), 16716);
-    assert_eq!(part1(&input, true).unwrap(), 4880);
+    let (numbers, boards) = read_input(&input1().unwrap());
+    assert_eq!(part1(&numbers, &boards), 16716);
+    assert_eq!(part2(&numbers, &boards), 4880);
 }
 
 #[bench]
 fn task_bench(b: &mut Bencher) {
     b.iter(|| {
-        let input = input1().unwrap();
-        part1(&input, false).unwrap();
-        part1(&input, true).unwrap();
+        let (numbers, boards) = read_input(&input1().unwrap());
+        part1(&numbers, &boards);
+        part2(&numbers, &boards);
     })
 }
