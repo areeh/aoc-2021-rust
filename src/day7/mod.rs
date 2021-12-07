@@ -35,15 +35,15 @@ fn part2(input: &Vec<i64>) -> i64 {
     let mn = input.iter().min().unwrap();
     let mx = input.iter().max().unwrap();
 
-    let mut best = cost_p2(*mn, *mx) * input.len() as i64;
+    let mut min_cost = None;
 
-    for a in *mn..*mx+1 {
-        let cost = input.iter().map(|v| cost_p2(*v, a)).sum();
-        if cost < best {
-            best = cost;
-        }      
+    for a in *mn..*mx + 1 {
+        let cost = input.iter().map(|v| cost_p2(*v, a)).sum::<i64>();
+        min_cost = min_cost
+            .map(|min| if cost < min { cost } else { min })
+            .or(Some(cost));
     }
-    best
+    min_cost.unwrap()
 }
 
 pub fn main() -> std::io::Result<()> {
