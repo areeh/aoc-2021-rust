@@ -13,6 +13,7 @@ mod day3;
 mod day4;
 mod day5;
 mod day6;
+mod day7;
 
 const TOKEN: &str = "***REMOVED***";
 
@@ -39,22 +40,24 @@ fn make_day(date: Date<Local>) -> std::io::Result<()> {
     let mut input_path = day_dir.clone();
     input_path.push("input.txt");
 
-    let mut file = File::create(&input_path)?;
+    if !input_path.exists() {
+        let mut file = File::create(&input_path)?;
 
-    let mut easy = Easy::new();
-    easy.cookie(&format!("session={}", TOKEN)).unwrap();
-    easy.url(&url).unwrap();
-    easy.write_function(move |data| {
-        file.write_all(data).unwrap();
-        Ok(data.len())
-    })
-    .unwrap();
-    easy.get(true).unwrap();
-    easy.perform().expect(&format!(
-        "Encountered error when performing request to {:?}",
-        &url
-    ));
-    assert_eq!(easy.response_code().unwrap(), 200);
+        let mut easy = Easy::new();
+        easy.cookie(&format!("session={}", TOKEN)).unwrap();
+        easy.url(&url).unwrap();
+        easy.write_function(move |data| {
+            file.write_all(data).unwrap();
+            Ok(data.len())
+        })
+        .unwrap();
+        easy.get(true).unwrap();
+        easy.perform().expect(&format!(
+            "Encountered error when performing request to {:?}",
+            &url
+        ));
+        assert_eq!(easy.response_code().unwrap(), 200);
+    }
 
     let mut rs_path = day_dir.clone();
     rs_path.push("mod.rs");
@@ -86,6 +89,7 @@ fn main() -> std::io::Result<()> {
     day4::main()?;
     day5::main()?;
     day6::main()?;
+    day7::main()?;
 
     Ok(())
 }
