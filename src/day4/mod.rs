@@ -91,18 +91,16 @@ fn mark(
     }
 }
 
+fn is_win_axis(marked_board: &Board, axis: Axis) -> bool {
+    marked_board
+        .sum_axis(axis)
+        .iter()
+        .map(|v| *v == 0 as u32)
+        .any(|x| x)
+}
+
 fn is_win(marked_board: &Board) -> bool {
-    let wins_x = marked_board
-        .sum_axis(Axis(0))
-        .iter()
-        .map(|v| *v == 0 as u32)
-        .any(|x| x);
-    let wins_y = marked_board
-        .sum_axis(Axis(1))
-        .iter()
-        .map(|v| *v == 0 as u32)
-        .any(|x| x);
-    wins_x | wins_y
+    is_win_axis(marked_board, Axis(0)) | is_win_axis(marked_board, Axis(1))
 }
 
 fn part1(numbers: &Vec<u32>, boards: &Vec<Board>) -> u32 {

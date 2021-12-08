@@ -1,4 +1,6 @@
+extern crate test;
 use std::fs;
+use test::Bencher;
 
 fn input1() -> std::io::Result<String> {
     fs::read_to_string("./src/day3/input.txt")
@@ -12,7 +14,7 @@ fn parse(input: &str) -> Vec<u16> {
     input
         .lines()
         .map(|v| u16::from_str_radix(v.trim(), 2))
-        .collect::<Result<Vec<_>, _>>()
+        .collect::<Result<_, _>>()
         .unwrap()
 }
 
@@ -37,13 +39,13 @@ fn part1(input: &str) -> u32 {
     to_u32(&most_mask) * to_u32(&least_mask)
 }
 
-fn some_retain(bit_vec: &[u16], bits: usize, flip: bool) -> u32 {
+fn retain_matches(bit_vec: &[u16], bits: usize, flip: bool) -> u32 {
     let mut tmp_bit_vec = bit_vec.to_vec();
     for i in 0..bits {
         let half_n_elements = tmp_bit_vec.len() as f32 / 2.0;
         let sum_of_nth = sum_nth_bit(&tmp_bit_vec, i, bits);
-        let cmp_val = (sum_of_nth as f32 >= half_n_elements) ^ flip;
-        tmp_bit_vec.retain(|&v| nth(&v, bits, i) == cmp_val as u16);
+        let desired_bit = (sum_of_nth as f32 >= half_n_elements) ^ flip;
+        tmp_bit_vec.retain(|&v| nth(&v, bits, i) == desired_bit as u16);
         if tmp_bit_vec.len() == 1 {
             break;
         }
@@ -55,8 +57,8 @@ fn part2(input: &str) -> u32 {
     let bits = input.lines().next().unwrap().len();
     let bit_vec = parse(input);
 
-    let oxy = some_retain(&bit_vec, bits, false);
-    let co2 = some_retain(&bit_vec, bits, true);
+    let oxy = retain_matches(&bit_vec, bits, false);
+    let co2 = retain_matches(&bit_vec, bits, true);
 
     oxy * co2
 }
@@ -91,4 +93,14 @@ fn task() {
     let input = input1().unwrap();
     assert_eq!(part1(&input), 1458194);
     assert_eq!(part2(&input), 2829354);
+}
+
+
+#[bench]
+fn task_bench(b: &mut Bencher) {
+    b.iter(|| {
+        let input = input1().unwrap();
+        part1(&input);
+        part2(&input);
+    })
 }
