@@ -2,7 +2,6 @@ extern crate test;
 use itertools::{zip, Itertools};
 use ndarray::{s, Array2, Dim};
 use std::fs;
-use itertools::enumerate;
 
 #[cfg(test)]
 use test::Bencher;
@@ -46,13 +45,13 @@ fn pad(arr: &Floor, value: u32) -> Floor {
 
 fn local_min_mask(floor: Floor) -> Vec<bool> {
     floor
-    .windows([3, 3])
-    .into_iter()
-    .map(|v| {
-        let mid = v[[1, 1]];
-        (mid < v[[0, 1]]) & (mid < v[[1, 0]]) & (mid < v[[2, 1]]) & (mid < v[[1, 2]])
-    })
-    .collect_vec()
+        .windows([3, 3])
+        .into_iter()
+        .map(|v| {
+            let mid = v[[1, 1]];
+            (mid < v[[0, 1]]) & (mid < v[[1, 0]]) & (mid < v[[2, 1]]) & (mid < v[[1, 2]])
+        })
+        .collect_vec()
 }
 
 fn part1(input: &Floor) -> u32 {
@@ -76,26 +75,27 @@ fn part2(input: &Floor) -> u32 {
         .map(|((idx, _), _)| idx)
         .collect();
 
-    let mut last_id = 1;
+    let mut basin_id = 0;
     let mut visited = Array2::<usize>::zeros(input.raw_dim());
-    for (n, i) in enumerate(&indices) {
+    for i in &indices {
+        basin_id += 1;
         let mut to_visit = vec![i.clone()];
         while let Some(ni) = to_visit.pop() {
-            const DIRECTIONS: &[(usize, usize); 4] = &[(1, 0), (usize::MAX, 0), (0, 1), (0, usize::MAX)];
+            const DIRECTIONS: &[(usize, usize); 4] =
+                &[(1, 0), (usize::MAX, 0), (0, 1), (0, usize::MAX)];
             for dir in DIRECTIONS {
                 let pos = (ni.0.wrapping_add(dir.0), ni.1.wrapping_add(dir.1));
                 if let Some(v) = input.get(pos) {
                     if (visited[pos] == 0) & (*v != 9) {
                         to_visit.push(pos);
-                        visited[pos] = n + 1;
+                        visited[pos] = basin_id;
                     }
                 }
             }
         }
-        last_id = n + 1;
     }
 
-    let mut counts = vec![0; last_id + 1];
+    let mut counts = vec![0; basin_id + 1];
     for v in visited.iter() {
         counts[*v] += 1
     }
