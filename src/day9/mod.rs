@@ -1,7 +1,7 @@
 extern crate test;
 use itertools::{zip, Itertools};
 use ndarray::{s, Array2, Dim};
-use std::fs;
+use std::{collections::VecDeque, fs};
 
 #[cfg(test)]
 use test::Bencher;
@@ -77,18 +77,17 @@ fn part2(input: &Floor) -> u32 {
 
     let mut basin_id = 0;
     let mut visited = Array2::<usize>::zeros(input.raw_dim());
-    for i in &indices {
+    for i in indices {
         basin_id += 1;
-        let mut to_visit = vec![i.clone()];
-        while let Some(ni) = to_visit.pop() {
-            const DIRECTIONS: &[(usize, usize); 4] =
-                &[(1, 0), (usize::MAX, 0), (0, 1), (0, usize::MAX)];
-            for dir in DIRECTIONS {
-                let pos = (ni.0.wrapping_add(dir.0), ni.1.wrapping_add(dir.1));
-                if let Some(v) = input.get(pos) {
-                    if (visited[pos] == 0) & (*v != 9) {
-                        to_visit.push(pos);
-                        visited[pos] = basin_id;
+        let mut to_visit = VecDeque::from([i]);
+        while let Some(front) = to_visit.pop_front() {
+            const CARDINALS: &[(usize, usize); 4] = &[(1, 0), (usize::MAX, 0), (0, 1), (0, usize::MAX)];
+            for dir in CARDINALS {
+                let next = (front.0.wrapping_add(dir.0), front.1.wrapping_add(dir.1));
+                if let Some(0..=8) = input.get(next) {
+                    if visited[next] == 0 {
+                        to_visit.push_back(next);
+                        visited[next] = basin_id;
                     }
                 }
             }
@@ -100,7 +99,7 @@ fn part2(input: &Floor) -> u32 {
         counts[*v] += 1
     }
 
-    counts.sort();
+    counts.sort_unstable();
     counts.iter().rev().skip(1).take(3).product::<usize>() as u32
 }
 
