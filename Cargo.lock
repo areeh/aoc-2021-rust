@@ -6,13 +6,13 @@ version = 3
 name = "aoc-2021"
 version = "0.1.0"
 dependencies = [
- "bit_reverse",
  "chrono",
  "csv",
  "curl",
  "itertools",
  "ndarray",
  "ndarray-csv",
+ "num",
  "rand 0.8.4",
  "statistical",
 ]
@@ -28,12 +28,6 @@ name = "autocfg"
 version = "1.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "cdb031dd78e28731d87d56cc8ffef4a8f36ca26c38fe2de700543e627f8a464a"
-
-[[package]]
-name = "bit_reverse"
-version = "0.1.8"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "99528ca30abb9495c7e106bf7c3177b257c62040fc0f2909fe470b0f43097296"
 
 [[package]]
 name = "bitflags"

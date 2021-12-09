@@ -1,6 +1,8 @@
 extern crate test;
 use ndarray::Array2;
 use std::fs;
+
+#[cfg(test)]
 use test::Bencher;
 
 type Segment = [[usize; 2]; 2];

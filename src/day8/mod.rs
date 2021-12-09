@@ -3,6 +3,8 @@ use itertools::zip;
 use itertools::Itertools;
 use std::collections::HashMap;
 use std::fs;
+
+#[cfg(test)]
 use test::Bencher;
 
 fn input1() -> std::io::Result<String> {

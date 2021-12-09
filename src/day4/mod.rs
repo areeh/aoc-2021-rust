@@ -3,6 +3,8 @@ use itertools::Itertools;
 use ndarray::{Array2, Axis};
 use std::collections::HashMap;
 use std::fs;
+
+#[cfg(test)]
 use test::Bencher;
 
 type Board = Array2<u32>;

@@ -1,5 +1,7 @@
 extern crate test;
 use std::fs;
+
+#[cfg(test)]
 use test::Bencher;
 
 fn input1() -> std::io::Result<String> {
