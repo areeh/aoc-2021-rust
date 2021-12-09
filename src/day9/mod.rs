@@ -1,8 +1,8 @@
 extern crate test;
-use itertools::zip;
+use itertools::{zip, Itertools};
 use ndarray::{s, Array2, Dim};
-use std::collections::HashSet;
 use std::fs;
+use itertools::enumerate;
 
 #[cfg(test)]
 use test::Bencher;
@@ -44,17 +44,21 @@ fn pad(arr: &Floor, value: u32) -> Floor {
     floor
 }
 
+fn local_min_mask(floor: Floor) -> Vec<bool> {
+    floor
+    .windows([3, 3])
+    .into_iter()
+    .map(|v| {
+        let mid = v[[1, 1]];
+        (mid < v[[0, 1]]) & (mid < v[[1, 0]]) & (mid < v[[2, 1]]) & (mid < v[[1, 2]])
+    })
+    .collect_vec()
+}
+
 fn part1(input: &Floor) -> u32 {
     let floor = pad(input, 9);
 
-    let mask_vec: Vec<_> = floor
-        .windows([3, 3])
-        .into_iter()
-        .map(|v| {
-            let mid = v[[1, 1]];
-            (mid < v[[0, 1]]) & (mid < v[[1, 0]]) & (mid < v[[2, 1]]) & (mid < v[[1, 2]])
-        })
-        .collect();
+    let mask_vec = local_min_mask(floor);
 
     zip(input.iter(), mask_vec.iter())
         .filter(|(_, m)| **m)
@@ -65,43 +69,39 @@ fn part1(input: &Floor) -> u32 {
 fn part2(input: &Floor) -> u32 {
     let floor = pad(input, 9);
 
-    let mask_vec: Vec<_> = floor
-        .windows([3, 3])
-        .into_iter()
-        .map(|v| {
-            let mid = v[[1, 1]];
-            (mid < v[[0, 1]]) & (mid < v[[1, 0]]) & (mid < v[[2, 1]]) & (mid < v[[1, 2]])
-        })
-        .collect();
+    let mask_vec = local_min_mask(floor);
 
     let indices: Vec<_> = zip(input.indexed_iter(), mask_vec.iter())
         .filter(|(_, m)| **m)
         .map(|((idx, _), _)| idx)
         .collect();
 
-    let mut counts = Vec::new();
-    let mut visited = HashSet::new();
-    for i in &indices {
+    let mut last_id = 1;
+    let mut visited = Array2::<usize>::zeros(input.raw_dim());
+    for (n, i) in enumerate(&indices) {
         let mut to_visit = vec![i.clone()];
-        let mut count = 1;
         while let Some(ni) = to_visit.pop() {
             const DIRECTIONS: &[(usize, usize); 4] = &[(1, 0), (usize::MAX, 0), (0, 1), (0, usize::MAX)];
             for dir in DIRECTIONS {
                 let pos = (ni.0.wrapping_add(dir.0), ni.1.wrapping_add(dir.1));
                 if let Some(v) = input.get(pos) {
-                    if !visited.contains(&pos) & (*v != 9) & (input[ni] < *v){
-                        visited.insert(pos);
+                    if (visited[pos] == 0) & (*v != 9) {
                         to_visit.push(pos);
-                        count += 1;
+                        visited[pos] = n + 1;
                     }
                 }
             }
         }
-        counts.push(count);
+        last_id = n + 1;
+    }
+
+    let mut counts = vec![0; last_id + 1];
+    for v in visited.iter() {
+        counts[*v] += 1
     }
 
     counts.sort();
-    counts.iter().rev().take(3).product()
+    counts.iter().rev().skip(1).take(3).product::<usize>() as u32
 }
 
 pub fn main() -> std::io::Result<()> {
