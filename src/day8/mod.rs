@@ -84,7 +84,7 @@ fn neg_7(n: u8) -> u8 {
 }
 
 fn bit_union<'a>(vals: impl Iterator<Item = &'a u8>) -> u8 {
-    vals.fold(0 as u8, |acc, v| acc | v)
+    vals.fold(0u8, |acc, v| acc | v)
 }
 
 fn build_classify_map(segment_map: &HashMap<char, u8>) -> HashMap<u8, char> {

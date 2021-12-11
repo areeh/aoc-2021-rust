@@ -100,7 +100,7 @@ fn part2(input: &Floor) -> u32 {
     }
 
     counts.sort_unstable();
-    counts.iter().rev().skip(1).take(3).product::<usize>() as u32
+    counts.iter().rev().skip(1).take(3).product()
 }
 
 pub fn main() -> std::io::Result<()> {
