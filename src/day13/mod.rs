@@ -1,6 +1,6 @@
 extern crate test;
 use itertools::Itertools;
-use ndarray::{s, Array2, Zip};
+use ndarray::{Array2, Axis, Slice, Zip};
 use std::fs;
 
 #[cfg(test)]
@@ -48,30 +48,43 @@ fn parse_input(input: &str) -> (Paper, Instructions) {
 
 fn fold(paper: &mut Paper, axis: char, pos: usize) -> Paper {
     let fold_len = match axis {
-        'x' => paper.dim().0 - pos - 1,
-        'y' => paper.dim().1 - pos - 1,
+        'x' => (paper.dim().0 - pos - 1) as isize,
+        'y' => (paper.dim().1 - pos - 1) as isize,
         _ => panic!("unknown axis"),
     };
 
-    let (left_slice, right_slice, right_inner) = match axis {
-        'x' => (
-            s![0..pos, ..],
-            s![(pos+1)..;-1, ..],
-            s![-(fold_len as isize).., ..],
-        ),
-        'y' => (
-            s![.., 0..pos],
-            s![.., (pos+1)..;-1],
-            s![.., -(fold_len as isize)..],
-        ),
+    let ax = match axis {
+        'x' => Axis(0),
+        'y' => Axis(1),
         _ => panic!("unknown axis"),
     };
 
-    let left = paper.slice(left_slice);
+    let left = paper.slice_axis(
+        ax,
+        Slice {
+            start: 0,
+            end: Some(pos as isize),
+            step: 1,
+        },
+    );
     let mut right = Array2::from_elem(left.raw_dim(), false);
     right
-        .slice_mut(right_inner)
-        .assign(&paper.slice(right_slice));
+        .slice_axis_mut(
+            ax,
+            Slice {
+                start: -fold_len,
+                end: None,
+                step: -1,
+            },
+        )
+        .assign(&paper.slice_axis(
+            ax,
+            Slice {
+                start: (pos + 1) as isize,
+                end: None,
+                step: 1,
+            },
+        ));
 
     &left | &right
 }
