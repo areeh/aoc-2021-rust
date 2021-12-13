@@ -18,6 +18,8 @@ mod day8;
 mod day9;
 mod day10;
 mod day11;
+mod day12;
+mod day13;
 
 const TOKEN: &str = "***REMOVED***";
 
@@ -98,6 +100,8 @@ fn main() -> std::io::Result<()> {
     day9::main()?;
     day10::main()?;
     day11::main()?;
+    day12::main()?;
+    day13::main()?;
 
     Ok(())
 }

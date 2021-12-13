@@ -15,6 +15,7 @@ ndarray-csv = "*"
 csv = "*" 
 statistical = "*"
 num = "*"
+petgraph = "*"
 
 [profile.release]
 debug = 1
