@@ -16,6 +16,8 @@ csv = "*"
 statistical = "*"
 num = "*"
 petgraph = "*"
+priority-queue = "*"
+bit-vec = "*"
 
 [profile.release]
 debug = 1

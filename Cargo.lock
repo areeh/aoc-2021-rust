@@ -6,6 +6,7 @@ version = 3
 name = "aoc-2021"
 version = "0.1.0"
 dependencies = [
+ "bit-vec",
  "chrono",
  "csv",
  "curl",
@@ -14,6 +15,7 @@ dependencies = [
  "ndarray-csv",
  "num",
  "petgraph",
+ "priority-queue",
  "rand 0.8.4",
  "statistical",
 ]
@@ -29,6 +31,12 @@ name = "autocfg"
 version = "1.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "cdb031dd78e28731d87d56cc8ffef4a8f36ca26c38fe2de700543e627f8a464a"
+
+[[package]]
+name = "bit-vec"
+version = "0.6.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "349f9b6a179ed607305526ca489b34ad0a41aed5f7980fa90eb03160b69598fb"
 
 [[package]]
 name = "bitflags"
@@ -384,6 +392,16 @@ name = "ppv-lite86"
 version = "0.2.15"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ed0cfbc8191465bed66e1718596ee0b0b35d5ee1f41c5df2189d0fe8bde535ba"
+
+[[package]]
+name = "priority-queue"
+version = "1.2.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "00ba480ac08d3cfc40dea10fd466fd2c14dee3ea6fc7873bc4079eda2727caf0"
+dependencies = [
+ "autocfg 1.0.1",
+ "indexmap",
+]
 
 [[package]]
 name = "rand"
