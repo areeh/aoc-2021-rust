@@ -23,6 +23,8 @@ mod day13;
 mod day14;
 mod day15;
 mod day16;
+mod day17;
+mod day18;
 
 
 const TOKEN: &str = "***REMOVED***";
@@ -93,22 +95,24 @@ fn make_until_today() -> std::io::Result<()> {
 
 fn main() -> std::io::Result<()> {
     make_until_today()?;
-    day1::main()?;
-    day2::main()?;
-    day3::main()?;
-    day4::main()?;
-    day5::main()?;
-    day6::main()?;
-    day7::main()?;
-    day8::main()?;
-    day9::main()?;
-    day10::main()?;
-    day11::main()?;
-    day12::main()?;
-    day13::main()?;
-    day14::main()?;
-    day15::main()?;
-    day16::main()?;
+    // day1::main()?;
+    // day2::main()?;
+    // day3::main()?;
+    // day4::main()?;
+    // day5::main()?;
+    // day6::main()?;
+    // day7::main()?;
+    // day8::main()?;
+    // day9::main()?;
+    // day10::main()?;
+    // day11::main()?;
+    // day12::main()?;
+    // day13::main()?;
+    // day14::main()?;
+    // day15::main()?;
+    // day16::main()?;
+    // day17::main()?;
+    day18::main()?;
 
     Ok(())
 }

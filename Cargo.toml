@@ -18,6 +18,7 @@ num = "*"
 petgraph = "*"
 priority-queue = "*"
 bit-vec = "*"
+reduce = "*"
 
 [profile.release]
 debug = 1

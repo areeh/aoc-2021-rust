@@ -112,7 +112,7 @@ fn part2(input: &BitVec) -> usize {
 
 pub fn main() -> std::io::Result<()> {
     let input = parse_input(&input1()?);
-    // println!("{:?}", part1(&input));
+    println!("{:?}", part1(&input));
     println!("{:?}", part2(&input));
     Ok(())
 }
