@@ -201,7 +201,7 @@ fn part2_jeff(input: &str) -> i32 {
     let pos = input
         .lines()
         .map(|line| Direction::from_line(line))
-        .fold(Pos2 { d: 0, f: 0, aim: 0}, |acc, x| acc + x);
+        .fold(Pos2 { d: 0, f: 0, aim: 0 }, |acc, x| acc + x);
     pos.d * pos.f
 }
 

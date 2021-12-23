@@ -81,7 +81,8 @@ fn part2(input: &Floor) -> u32 {
         basin_id += 1;
         let mut to_visit = VecDeque::from([i]);
         while let Some(front) = to_visit.pop_front() {
-            const CARDINALS: &[(usize, usize); 4] = &[(1, 0), (usize::MAX, 0), (0, 1), (0, usize::MAX)];
+            const CARDINALS: &[(usize, usize); 4] =
+                &[(1, 0), (usize::MAX, 0), (0, 1), (0, usize::MAX)];
             for dir in CARDINALS {
                 let next = (front.0.wrapping_add(dir.0), front.1.wrapping_add(dir.1));
                 if let Some(0..=8) = input.get(next) {

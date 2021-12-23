@@ -1,7 +1,7 @@
 extern crate test;
+use itertools::Itertools;
 use std::cmp::min;
 use std::fs;
-use itertools::Itertools;
 use std::ops::Range;
 
 #[cfg(test)]
@@ -63,7 +63,7 @@ fn possible_steps(initial: i32, target: [i32; 2]) -> Option<(usize, usize)> {
             } else {
                 return None;
             }
-        } else if (target[0]..target[1]+1).contains(&pos) {
+        } else if (target[0]..target[1] + 1).contains(&pos) {
             if first.is_none() {
                 first = Some(i);
             }
@@ -112,7 +112,6 @@ fn part2(input: &Target) -> usize {
         }
     }
     count
-
 }
 
 fn part2_not_brute(input: &Target) -> usize {

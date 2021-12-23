@@ -98,7 +98,7 @@ fn run_packets(packet: &Packet) -> usize {
             6 => (run_packets(&packets[0]) < run_packets(&packets[1])) as usize,
             7 => (run_packets(&packets[0]) == run_packets(&packets[1])) as usize,
             _ => unreachable!(),
-        }
+        },
     }
 }
 
@@ -168,7 +168,6 @@ fn test_p1() {
     assert_eq!(part1(&parse_input("C0015000016115A2E0802F182340")), 23);
     assert_eq!(part1(&parse_input("A0016C880162017C3686B18A3D4780")), 31);
 }
-
 
 #[test]
 fn test_p2() {
