@@ -19,6 +19,7 @@ mod day17;
 mod day18;
 mod day2;
 mod day20;
+mod day21;
 mod day3;
 mod day4;
 mod day5;
@@ -94,7 +95,7 @@ fn make_until_today() -> std::io::Result<()> {
 }
 
 fn main() -> std::io::Result<()> {
-    make_until_today()?;
+    // make_until_today(?;
     // day1::main()?;
     // day2::main()?;
     // day3::main()?;
@@ -113,7 +114,8 @@ fn main() -> std::io::Result<()> {
     // day16::main()?;
     // day17::main()?;
     // day18::main()?;
-    day20::main()?;
+    // day20::main()?;
+    day21::main()?;
 
     Ok(())
 }

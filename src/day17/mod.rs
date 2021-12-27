@@ -1,8 +1,6 @@
 extern crate test;
-use itertools::Itertools;
 use std::cmp::min;
 use std::fs;
-use std::ops::Range;
 
 #[cfg(test)]
 use test::Bencher;

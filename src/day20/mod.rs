@@ -1,6 +1,5 @@
 extern crate test;
-use itertools::Itertools;
-use ndarray::{s, Array2, Dim, Zip};
+use ndarray::{s, Array2, Dim};
 use std::fs;
 
 #[cfg(test)]
@@ -127,7 +126,7 @@ fn example() {
 fn task() {
     let input = parse_input(&input1().unwrap());
     assert_eq!(part1(input.clone()), 5786);
-    assert_eq!(part2(&input), 16757);
+    assert_eq!(part2(input.clone()), 16757);
 }
 
 #[bench]
