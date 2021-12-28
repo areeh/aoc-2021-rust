@@ -27,8 +27,8 @@ fn run_wins(
     }
 
     const TRANSITIONS: [(usize, usize); 7] =
-    [(3, 1), (4, 3), (5, 6), (6, 7), (7, 6), (8, 3), (9, 1)];
-    
+        [(3, 1), (4, 3), (5, 6), (6, 7), (7, 6), (8, 3), (9, 1)];
+
     for (v, n) in TRANSITIONS {
         let count = count * n;
         if (i % 2) == 0 {
