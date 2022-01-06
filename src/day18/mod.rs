@@ -97,11 +97,11 @@ fn explode(node: &mut Node, depth: usize) -> Option<(Option<u32>, Option<u32>)> 
     /*
     Explosions have 3 relevant situations:
     1: A pair with a leaf node on each side at depth 4
-    -> Explode, propagate values on depth up
+    -> Explode, propagate values up
     2: Try to explode the left node
-    -> add right explode value to immediate right node, propagate left explode value
+    -> add right explode value to immediate right node, propagate left explode value up
     3: Try to explode the right node
-    -> add left explode value to immediate left node, propagate right explode value
+    -> add left explode value to immediate left node, propagate right explode value up
     */
 
     if let Some((left, right)) = node.try_into_tuple() {
@@ -158,7 +158,7 @@ fn calc(node: &mut Node) {
         if split(node).is_err() {
             continue;
         };
-        // No change, break
+        // No change
         break;
     }
 }
@@ -282,14 +282,14 @@ fn example() {
 fn task() {
     let input = parse_input(&input1().unwrap());
     assert_eq!(part1(input.clone()), 3359);
-    // assert_eq!(part2(input.clone()), 1689540415957);
+    assert_eq!(part2(input.clone()), 4616);
 }
 
 #[bench]
 fn task_bench(b: &mut Bencher) {
     b.iter(|| {
-        // let input = parse_input(&input1().unwrap());
-        // part1(&input);
-        // part2(&input);
+        let input = parse_input(&input1().unwrap());
+        part1(input.clone());
+        part2(input.clone());
     })
 }
