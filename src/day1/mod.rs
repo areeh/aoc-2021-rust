@@ -54,8 +54,11 @@ fn note() {
     arr.windows(3)
         .collect::<Vec<_>>()
         .windows(2)
-        .map(|w| assert_eq!(
-            w[1].iter().sum::<i32>() > w[0].iter().sum(),
-            w[1][2] > w[0][0]
-        )).collect()
+        .map(|w| {
+            assert_eq!(
+                w[1].iter().sum::<i32>() > w[0].iter().sum(),
+                w[1][2] > w[0][0]
+            )
+        })
+        .collect()
 }

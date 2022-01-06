@@ -97,7 +97,6 @@ fn task() {
     assert_eq!(part2(&input), 2829354);
 }
 
-
 #[bench]
 fn task_bench(b: &mut Bencher) {
     b.iter(|| {

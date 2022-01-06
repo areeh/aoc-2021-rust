@@ -9,7 +9,11 @@ fn input1() -> std::io::Result<String> {
 }
 
 fn parse_input(input: &str) -> Vec<usize> {
-    input.split(',').map(|v| v.trim().parse()).collect::<Result<_, _>>().unwrap()
+    input
+        .split(',')
+        .map(|v| v.trim().parse())
+        .collect::<Result<_, _>>()
+        .unwrap()
 }
 
 fn parts(input: &Vec<usize>, days: u32) -> usize {
@@ -23,7 +27,6 @@ fn parts(input: &Vec<usize>, days: u32) -> usize {
     }
     counts.iter().sum()
 }
-
 
 fn part1(input: &Vec<usize>) -> usize {
     parts(input, 80)
