@@ -23,6 +23,8 @@ mod day20;
 mod day21;
 mod day22;
 mod day23;
+mod day24;
+mod day25;
 mod day3;
 mod day4;
 mod day5;
@@ -91,15 +93,14 @@ fn make_some_day(year: i32, day: u32) -> std::io::Result<()> {
 }
 
 fn make_until_today() -> std::io::Result<()> {
-    let today: Date<Local> = Local::today();
-    (1..today.day() + 1)
+    // let today: Date<Local> = Local::today();
+    (1..25 + 1)
         .map(|x| make_some_day(2021, x))
         .collect()
 }
 
 fn main() -> std::io::Result<()> {
-<<<<<<< HEAD
-    make_until_today()?;
+    // make_until_today()?;
     day1::main()?;
     day2::main()?;
     day3::main()?;
@@ -119,31 +120,12 @@ fn main() -> std::io::Result<()> {
     day17::main()?;
     day18::main()?;
     day19::main()?;
-=======
-    // make_until_today(?;
-    // day1::main()?;
-    // day2::main()?;
-    // day3::main()?;
-    // day4::main()?;
-    // day5::main()?;
-    // day6::main()?;
-    // day7::main()?;
-    // day8::main()?;
-    // day9::main()?;
-    // day10::main()?;
-    // day11::main()?;
-    // day12::main()?;
-    // day13::main()?;
-    // day14::main()?;
-    // day15::main()?;
-    // day16::main()?;
-    // day17::main()?;
-    // day18::main()?;
-    // day20::main()?;
-    // day21::main()?;
-    // day22::main()?;
+    day20::main()?;
+    day21::main()?;
+    day22::main()?;
     day23::main()?;
->>>>>>> 67817cec563feaf63857571fb18da2afec223c6d
+    day24::main()?;
+    day25::main()?;
 
     Ok(())
 }

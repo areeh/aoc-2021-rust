@@ -44,10 +44,11 @@ fn parse_image(input: &str) -> Image {
 }
 
 fn parse_input(input: &str) -> (Algo, Image) {
-    let (algo, image) = input.trim().split_once("\n\n").expect(&format!(
-        "Did not find a double newline in {:?}",
-        input.trim()
-    ));
+    let (algo, image) = input
+        .trim()
+        .split_once("\n\n")
+        .or(input.trim().split_once("\r\n\r\n"))
+        .expect("Did not find a double newline or double CRLF");
     let algo = vec_to_array(
         algo.chars()
             .map(|v| match v {
